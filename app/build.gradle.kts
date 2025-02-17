@@ -52,9 +52,13 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    implementation(libs.composeDestinations.core)
+    ksp(libs.composeDestinations.ksp)
+
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
+    implementation(libs.koin.composable)
 
     implementation(libs.koin.annotations)
     ksp(libs.koin.annotations.compiler)
