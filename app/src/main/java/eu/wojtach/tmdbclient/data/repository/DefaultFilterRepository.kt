@@ -1,18 +1,30 @@
 package eu.wojtach.tmdbclient.data.repository
 
-import eu.wojtach.tmdbclient.data.remote.genre.DataSource
 import eu.wojtach.tmdbclient.domain.model.Filter
 import eu.wojtach.tmdbclient.domain.repository.FilterRepository
-import eu.wojtach.tmdbclient.domain.usecase.GetAllFiltersUseCase
 import org.koin.core.annotation.Single
+import eu.wojtach.tmdbclient.data.local.filter.DataSource as LocalDataSource
+import eu.wojtach.tmdbclient.data.remote.genre.DataSource as RemoteDataSource
 
-@Single(binds = [GetAllFiltersUseCase::class])
+@Single
 class DefaultFilterRepository(
-    private val dataSource: DataSource
+    private val localDataSource: LocalDataSource,
+    private val remoteDataSource: RemoteDataSource
 ) : FilterRepository {
+    override fun getSelectedId(): Long? {
+        return localDataSource.getSelectedFilterId()
+    }
+
+    override fun setSelectedId(id: Long) {
+        localDataSource.setSelectedFilterId(id)
+    }
+
+    override fun clearSelectedId() {
+        localDataSource.clearSelectedFilterId()
+    }
 
     override suspend fun getAll(): List<Filter> {
-        val genres = dataSource.genres().genres
+        val genres = remoteDataSource.genres().genres
         return genres.map { it.toDomain() }
     }
 }

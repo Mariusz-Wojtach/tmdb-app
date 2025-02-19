@@ -5,8 +5,8 @@ import eu.wojtach.tmdbclient.domain.repository.FilterRepository
 import org.koin.core.annotation.Factory
 
 @Factory
-class GetAllFiltersUseCase(
+class ClearSelectedFilterIdUseCase(
     private val repository: FilterRepository
 ) {
-    suspend operator fun invoke(): List<Filter> = repository.getAll()
+    operator fun invoke() = repository.clearSelectedId()
 }

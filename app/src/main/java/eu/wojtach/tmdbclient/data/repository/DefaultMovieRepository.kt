@@ -12,8 +12,8 @@ import org.koin.core.annotation.Single
 class DefaultMovieRepository(
     private val dataSource: DataSource
 ) : MovieRepository {
-    override suspend fun getAll(page: Int): List<Movie> = coroutineScope {
-        val discoverResponse = dataSource.discovery(page)
+    override suspend fun getAll(page: Int, genreId: Long?): List<Movie> = coroutineScope {
+        val discoverResponse = dataSource.discovery(page, genreId)
         discoverResponse.results.map { movieResult ->
             async {
                 val details = dataSource.details(movieResult.id).toDomain()

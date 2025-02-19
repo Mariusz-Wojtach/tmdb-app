@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,19 +26,32 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 import eu.wojtach.tmdbclient.domain.model.Filter
 import org.koin.compose.koinInject
 
 @Destination<RootGraph>
 @Composable
 fun FiltersListScreen(
+    navigator: DestinationsNavigator,
     viewModel: FiltersListViewModel = koinInject()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(viewModel.sideEffect) {
+        viewModel.sideEffect.collect { sideEffect ->
+            when (sideEffect) {
+                FiltersListSideEffect.NavigateUp -> navigator.navigateUp()
+            }
+        }
+    }
+
     FiltersListScreen(
         state = state,
-        onFilterSelected = {}
+        onFilterSelected = { filter ->
+            viewModel.onFilterSelected(filter.id)
+        }
     )
 }
 
@@ -67,7 +81,7 @@ private fun FiltersListScreen(
                 ) {
                     state.filters.map { filter ->
                         FilterChip(
-                            selected = false,
+                            selected = filter.id == state.selectedFilterId,
                             label = { Text(filter.name) },
                             onClick = { onFilterSelected(filter) }
                         )
@@ -85,6 +99,7 @@ private fun FiltersListScreenPreview() {
         FiltersListScreen(
             state = FiltersListState(
                 isLoading = false,
+                selectedFilterId = 1,
                 filters = (1..10)
                     .map {
                         Filter(
@@ -105,6 +120,7 @@ private fun FiltersListScreenLoadingPreview() {
         FiltersListScreen(
             state = FiltersListState(
                 isLoading = true,
+                selectedFilterId = null,
                 filters = (1..10)
                     .map {
                         Filter(
