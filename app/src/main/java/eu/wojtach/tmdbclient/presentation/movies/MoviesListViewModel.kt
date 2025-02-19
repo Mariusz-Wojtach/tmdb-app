@@ -1,12 +1,8 @@
 package eu.wojtach.tmdbclient.presentation.movies
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eu.wojtach.tmdbclient.data.remote.DataSource
-import eu.wojtach.tmdbclient.domain.model.Movie
 import eu.wojtach.tmdbclient.domain.repository.MovieRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -24,7 +20,7 @@ class MoviesListViewModel(
         .stateIn(viewModelScope, SharingStarted.Lazily, MoviesListState.Empty)
 
     private suspend fun initLoad() {
-        val response = repository.getMovies(1)
+        val response = repository.getAll(1)
 
         _state.value = state.value.copy(
             isLoading = false,

@@ -4,5 +4,5 @@ import eu.wojtach.tmdbclient.domain.model.Movie
 
 interface MovieRepository {
 
-    suspend fun getMovies(page: Int): List<Movie>
+    suspend fun getAll(page: Int): List<Movie>
 }
