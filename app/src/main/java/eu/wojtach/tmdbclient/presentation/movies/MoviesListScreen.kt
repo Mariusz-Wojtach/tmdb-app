@@ -73,6 +73,9 @@ private fun MoviesListScreen(
                 .fillMaxSize()
         ) {
             when (state) {
+                is MoviesListState.Error -> Column(modifier = Modifier.align(Alignment.Center)) {
+                    Text(state.message)
+                }
                 MoviesListState.Loading -> CircularProgressIndicator(
                     modifier = Modifier.align(
                         Alignment.Center
@@ -127,6 +130,17 @@ private fun MoviesListScreenLoadingPreview() {
     MaterialTheme {
         MoviesListScreen(
             state = MoviesListState.Loading,
+            onFilterClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun MoviesListScreenErrorPreview() {
+    MaterialTheme {
+        MoviesListScreen(
+            state = MoviesListState.Error("Error"),
             onFilterClick = {}
         )
     }

@@ -1,13 +1,12 @@
 package eu.wojtach.tmdbclient.presentation.filters
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -20,14 +19,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.result.ResultBackNavigator
 import eu.wojtach.tmdbclient.domain.model.Filter
 import org.koin.compose.koinInject
 
@@ -69,14 +66,20 @@ private fun FiltersListScreen(
         Box(
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
-            if (state.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else {
-                FlowRow(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
+            when (state) {
+                is FiltersListState.Error -> Column(modifier = Modifier.align(Alignment.Center)) {
+                    Text(state.message)
+                }
+                FiltersListState.Loading -> CircularProgressIndicator(
+                    modifier = Modifier.align(
+                        Alignment.Center
+                    )
+                )
+
+                is FiltersListState.Success -> FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     state.filters.map { filter ->
@@ -97,8 +100,7 @@ private fun FiltersListScreen(
 private fun FiltersListScreenPreview() {
     MaterialTheme {
         FiltersListScreen(
-            state = FiltersListState(
-                isLoading = false,
+            state = FiltersListState.Success(
                 selectedFilterId = 1,
                 filters = (1..10)
                     .map {
@@ -118,17 +120,18 @@ private fun FiltersListScreenPreview() {
 private fun FiltersListScreenLoadingPreview() {
     MaterialTheme {
         FiltersListScreen(
-            state = FiltersListState(
-                isLoading = true,
-                selectedFilterId = null,
-                filters = (1..10)
-                    .map {
-                        Filter(
-                            id = it.toLong(),
-                            name = "Filter $it"
-                        )
-                    }
-            ),
+            state = FiltersListState.Loading,
+            onFilterSelected = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FiltersListScreenErrorPreview() {
+    MaterialTheme {
+        FiltersListScreen(
+            state = FiltersListState.Error("Error"),
             onFilterSelected = {}
         )
     }

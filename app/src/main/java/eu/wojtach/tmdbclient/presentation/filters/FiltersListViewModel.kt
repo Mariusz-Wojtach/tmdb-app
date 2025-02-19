@@ -2,6 +2,8 @@ package eu.wojtach.tmdbclient.presentation.filters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import eu.wojtach.tmdbclient.domain.error.DataError
+import eu.wojtach.tmdbclient.domain.result.Result
 import eu.wojtach.tmdbclient.domain.usecase.ClearSelectedFilterIdUseCase
 import eu.wojtach.tmdbclient.domain.usecase.GetAllFiltersUseCase
 import eu.wojtach.tmdbclient.domain.usecase.GetSelectedFilterIdUseCase
@@ -23,10 +25,10 @@ class FiltersListViewModel(
     private val getAllFiltersUseCase: GetAllFiltersUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(FiltersListState.Empty)
+    private val _state = MutableStateFlow<FiltersListState>(FiltersListState.Loading)
     val state = _state
         .onStart { initLoad() }
-        .stateIn(viewModelScope, SharingStarted.Lazily, FiltersListState.Empty)
+        .stateIn(viewModelScope, SharingStarted.Lazily, FiltersListState.Loading)
 
     private val _sideEffect = MutableSharedFlow<FiltersListSideEffect>()
     val sideEffect = _sideEffect.asSharedFlow()
@@ -35,23 +37,36 @@ class FiltersListViewModel(
         val response = getAllFiltersUseCase()
         val selectedFilterId = getSelectedFilterIdUseCase()
 
-        _state.value = state.value.copy(
-            isLoading = false,
-            selectedFilterId = selectedFilterId,
-            filters = response
-        )
+        val newState = when (response) {
+            is Result.Error -> {
+                when (response.error) {
+                    DataError.Timeout -> FiltersListState.Error("Timeout")
+                    else -> FiltersListState.Error("Unknown")
+                }
+            }
+
+            is Result.Success -> FiltersListState.Success(
+                selectedFilterId = selectedFilterId,
+                filters = response.data
+            )
+        }
+
+        _state.value = newState
     }
 
     fun onFilterSelected(id: Long) {
-        if (_state.value.selectedFilterId == id) {
-            clearSelectedFilterIdUseCase()
-            _state.value = state.value.copy(selectedFilterId = null)
-        } else {
-            setSelectedFilterIdUseCase(id)
-            _state.value = state.value.copy(selectedFilterId = id)
-        }
-        viewModelScope.launch {
-            _sideEffect.emit(FiltersListSideEffect.NavigateUp)
+        val currentState = _state.value
+        if (currentState is FiltersListState.Success) {
+            if (currentState.selectedFilterId == id) {
+                clearSelectedFilterIdUseCase()
+                _state.value = currentState.copy(selectedFilterId = null)
+            } else {
+                setSelectedFilterIdUseCase(id)
+                _state.value = currentState.copy(selectedFilterId = id)
+            }
+            viewModelScope.launch {
+                _sideEffect.emit(FiltersListSideEffect.NavigateUp)
+            }
         }
     }
 }
