@@ -24,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import eu.wojtach.tmdbclient.domain.model.Movie
+import eu.wojtach.tmdbclient.presentation.movies.ui.Poster
 import org.koin.compose.koinInject
 
 @Destination<RootGraph>(start = true)
@@ -57,6 +58,7 @@ private fun MoviesListScreen(state: MoviesListState) {
         ) {
             items(items = state.movies, key = { movie -> movie.id }) { movie ->
                 Column {
+                    Poster(posterPath = movie.posterPath)
                     Text(movie.title)
                     Text(movie.rating.toString())
                     if (movie.details != null) {

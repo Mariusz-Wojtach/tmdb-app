@@ -1,8 +1,11 @@
 package eu.wojtach.tmdbclient.presentation.movies
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import eu.wojtach.tmdbclient.data.remote.DataSource
 import eu.wojtach.tmdbclient.domain.model.Movie
+import eu.wojtach.tmdbclient.domain.repository.MovieRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -11,26 +14,21 @@ import kotlinx.coroutines.flow.stateIn
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class MoviesListViewModel : ViewModel() {
+class MoviesListViewModel(
+    private val repository: MovieRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(MoviesListState.Empty)
     val state = _state
-        .onStart { }
+        .onStart { initLoad() }
         .stateIn(viewModelScope, SharingStarted.Lazily, MoviesListState.Empty)
 
     private suspend fun initLoad() {
-        delay(1000L)
+        val response = repository.getMovies(1)
+
         _state.value = state.value.copy(
             isLoading = false,
-            listOf(
-                Movie(
-                    id = 1000,
-                    title = "Movie 1",
-                    posterPath = "posterPath",
-                    rating = 5.0f,
-                    details = null
-                )
-            )
+            movies = response
         )
     }
 }

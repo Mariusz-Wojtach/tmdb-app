@@ -1,6 +1,7 @@
 [versions]
 activityCompose = "1.10.0"
 agp = "8.8.1"
+coil = "3.1.0"
 composeBom = "2025.02.00"
 composeDestinations = "2.0.0-beta12"
 coreKtx = "1.15.0"
@@ -11,8 +12,9 @@ koinAnnotationsBom = "2.0.0-RC1"
 koinBom = "4.1.0-Beta5"
 kotlin = "2.0.0"
 ksp = "2.0.20-1.0.25"
+ktor = "3.1.0"
 lifecycleRuntimeKtx = "2.8.7"
-secrets-gradle-plugin = "2.0.1"
+secretsGradlePlugin = "2.0.1"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -28,6 +30,8 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 composeDestinations-core = {module = "io.github.raamcosta.compose-destinations:core", version.ref = "composeDestinations"}
 composeDestinations-ksp = {module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "composeDestinations"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -37,10 +41,17 @@ koin-annotations-compiler = { module = "io.insert-koin:koin-ksp-compiler", versi
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
 koin-composable = { module = "io.insert-koin:koin-androidx-compose" }
 koin-core = { module = "io.insert-koin:koin-core" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets-gradle-plugin" }
+secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
