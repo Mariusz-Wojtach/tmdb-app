@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,6 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.FiltersListScreenDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import eu.wojtach.tmdbclient.domain.model.Movie
 import eu.wojtach.tmdbclient.presentation.movies.ui.Poster
 import org.koin.compose.koinInject
@@ -28,23 +31,30 @@ import org.koin.compose.koinInject
 @Destination<RootGraph>(start = true)
 @Composable
 fun MoviesListScreen(
+    navigator: DestinationsNavigator,
     viewModel: MoviesListViewModel = koinInject()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    MoviesListScreen(state)
+    MoviesListScreen(
+        state,
+        onFilterClick = { navigator.navigate(FiltersListScreenDestination) }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MoviesListScreen(state: MoviesListState) {
+private fun MoviesListScreen(
+    state: MoviesListState,
+    onFilterClick: () -> Unit
+) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(title = { Text("Movies") })
+            TopAppBar(title = { Text("Movies") })
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO*/ }
+                onClick = onFilterClick
             ) {
                 Icon(Icons.Filled.Edit, contentDescription = "Filter")
             }
@@ -86,7 +96,8 @@ private fun MoviesListScreenPreview() {
                             details = null
                         )
                     }
-            )
+            ),
+            onFilterClick = {}
         )
     }
 }
