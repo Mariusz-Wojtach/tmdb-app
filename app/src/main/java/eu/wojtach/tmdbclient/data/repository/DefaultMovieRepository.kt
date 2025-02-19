@@ -1,6 +1,6 @@
 package eu.wojtach.tmdbclient.data.repository
 
-import eu.wojtach.tmdbclient.data.remote.DataSource
+import eu.wojtach.tmdbclient.data.remote.movie.DataSource
 import eu.wojtach.tmdbclient.domain.model.Movie
 import eu.wojtach.tmdbclient.domain.repository.MovieRepository
 import kotlinx.coroutines.async

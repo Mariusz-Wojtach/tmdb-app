@@ -2,7 +2,6 @@ package eu.wojtach.tmdbclient.presentation.filters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eu.wojtach.tmdbclient.domain.repository.MovieRepository
 import eu.wojtach.tmdbclient.domain.usecase.GetAllFiltersUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

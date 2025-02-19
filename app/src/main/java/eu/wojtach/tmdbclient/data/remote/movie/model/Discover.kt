@@ -1,4 +1,4 @@
-package eu.wojtach.tmdbclient.data.remote.model
+package eu.wojtach.tmdbclient.data.remote.movie.model
 
 import eu.wojtach.tmdbclient.domain.model.Movie
 import kotlinx.serialization.Serializable

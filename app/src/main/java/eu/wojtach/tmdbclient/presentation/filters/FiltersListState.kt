@@ -7,6 +7,6 @@ data class FiltersListState(
     val filters: List<Filter>
 ) {
     companion object {
-        val Empty = FiltersListState(isLoading = false, filters = emptyList())
+        val Empty = FiltersListState(isLoading = true, filters = emptyList())
     }
 }

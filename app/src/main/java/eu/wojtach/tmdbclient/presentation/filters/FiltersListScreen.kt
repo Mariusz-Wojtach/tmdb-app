@@ -1,10 +1,14 @@
 package eu.wojtach.tmdbclient.presentation.filters
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -13,7 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,18 +52,27 @@ private fun FiltersListScreen(
             TopAppBar(title = { Text("Filters") })
         }
     ) { innerPadding ->
-        FlowRow(
+        Box(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .fillMaxSize()
         ) {
-            state.filters.map { filter ->
-                FilterChip(
-                    selected = false,
-                    label = { Text(filter.name) },
-                    onClick = { onFilterSelected(filter) }
-                )
+            if (state.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
+                FlowRow(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    state.filters.map { filter ->
+                        FilterChip(
+                            selected = false,
+                            label = { Text(filter.name) },
+                            onClick = { onFilterSelected(filter) }
+                        )
+                    }
+                }
             }
         }
     }
@@ -70,6 +85,26 @@ private fun FiltersListScreenPreview() {
         FiltersListScreen(
             state = FiltersListState(
                 isLoading = false,
+                filters = (1..10)
+                    .map {
+                        Filter(
+                            id = it.toLong(),
+                            name = "Filter $it"
+                        )
+                    }
+            ),
+            onFilterSelected = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FiltersListScreenLoadingPreview() {
+    MaterialTheme {
+        FiltersListScreen(
+            state = FiltersListState(
+                isLoading = true,
                 filters = (1..10)
                     .map {
                         Filter(
