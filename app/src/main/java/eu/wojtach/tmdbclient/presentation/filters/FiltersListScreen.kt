@@ -7,9 +7,14 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,7 +53,9 @@ fun FiltersListScreen(
         state = state,
         onFilterSelected = { filter ->
             viewModel.onFilterSelected(filter.id)
-        }
+        },
+        onRetryClick = { viewModel.retry() },
+        onBackClick = { navigator.navigateUp() }
     )
 }
 
@@ -56,11 +63,23 @@ fun FiltersListScreen(
 @Composable
 private fun FiltersListScreen(
     state: FiltersListState,
-    onFilterSelected: (Filter) -> Unit
+    onFilterSelected: (Filter) -> Unit,
+    onRetryClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Filters") })
+            TopAppBar(
+                title = { Text("Filters") },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                },
+            )
         }
     ) { innerPadding ->
         Box(
@@ -72,7 +91,11 @@ private fun FiltersListScreen(
             when (state) {
                 is FiltersListState.Error -> Column(modifier = Modifier.align(Alignment.Center)) {
                     Text(state.message)
+                    Button(onClick = onRetryClick) {
+                        Text("Retry")
+                    }
                 }
+
                 FiltersListState.Loading -> CircularProgressIndicator(
                     modifier = Modifier.align(
                         Alignment.Center
@@ -110,7 +133,9 @@ private fun FiltersListScreenPreview() {
                         )
                     }
             ),
-            onFilterSelected = {}
+            onFilterSelected = {},
+            onRetryClick = {},
+            onBackClick = {}
         )
     }
 }
@@ -121,7 +146,9 @@ private fun FiltersListScreenLoadingPreview() {
     MaterialTheme {
         FiltersListScreen(
             state = FiltersListState.Loading,
-            onFilterSelected = {}
+            onFilterSelected = {},
+            onRetryClick = {},
+            onBackClick = {}
         )
     }
 }
@@ -132,7 +159,9 @@ private fun FiltersListScreenErrorPreview() {
     MaterialTheme {
         FiltersListScreen(
             state = FiltersListState.Error("Error"),
-            onFilterSelected = {}
+            onFilterSelected = {},
+            onRetryClick = {},
+            onBackClick = {}
         )
     }
 }
