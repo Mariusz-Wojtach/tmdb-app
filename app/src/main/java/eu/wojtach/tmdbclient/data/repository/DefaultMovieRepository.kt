@@ -11,6 +11,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import org.koin.core.annotation.Single
 import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 @Single
 class DefaultMovieRepository(
@@ -31,6 +32,8 @@ class DefaultMovieRepository(
                 Result.Error(DataError.Timeout)
             } catch (e: HttpRequestTimeoutException) {
                 Result.Error(DataError.Timeout)
+            } catch (e: UnknownHostException) {
+                Result.Error(DataError.UnknownHost)
             } catch (e: Exception) {
                 Result.Error(DataError.Unknown)
             }

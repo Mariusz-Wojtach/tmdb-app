@@ -10,6 +10,7 @@ import eu.wojtach.tmdbclient.domain.usecase.ClearSelectedFilterIdUseCase
 import eu.wojtach.tmdbclient.domain.usecase.GetAllFiltersUseCase
 import eu.wojtach.tmdbclient.domain.usecase.GetSelectedFilterIdUseCase
 import eu.wojtach.tmdbclient.domain.usecase.SetSelectedFilterIdUseCase
+import eu.wojtach.tmdbclient.presentation.movies.MoviesListState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -69,6 +70,7 @@ class FiltersListViewModel(
         val newState = when (response) {
             is Result.Error -> {
                 when (response.error) {
+                    DataError.UnknownHost -> FiltersListState.Error("No network")
                     DataError.Timeout -> FiltersListState.Error("Timeout")
                     else -> FiltersListState.Error("Unknown")
                 }

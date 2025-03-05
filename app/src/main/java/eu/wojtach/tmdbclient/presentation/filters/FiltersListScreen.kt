@@ -89,11 +89,13 @@ private fun FiltersListScreen(
                 .fillMaxSize()
         ) {
             when (state) {
-                is FiltersListState.Error -> Column(modifier = Modifier.align(Alignment.Center)) {
+                is FiltersListState.Error -> Column(
+                    modifier = Modifier.align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(state.message)
-                    Button(onClick = onRetryClick) {
-                        Text("Retry")
-                    }
+                    Button(onClick = onRetryClick) { Text("Retry") }
                 }
 
                 FiltersListState.Loading -> CircularProgressIndicator(
