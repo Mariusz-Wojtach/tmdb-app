@@ -1,6 +1,5 @@
 package eu.wojtach.tmdbclient.domain.usecase
 
-import android.util.Log
 import eu.wojtach.tmdbclient.domain.error.DataError
 import eu.wojtach.tmdbclient.domain.model.Movie
 import eu.wojtach.tmdbclient.domain.repository.FilterRepository
